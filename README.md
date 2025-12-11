@@ -1,113 +1,87 @@
-# CombineProphetAnalytics
-
-A data-driven analytics pipeline that integrates **NFL Combine performance data**, **NFL in-game tracking data**, and **Facebook Prophet time-series modeling** to evaluate player athleticism, project on-field performance, and generate coaching insights. This repository demonstrates how to combine traditionally separate data sources into a unified modeling framework that can replace or augment the NFL Combine with *game-verified, context-aware metrics*.
-
----
+# Combine Prophet Analytics
 
 ## Overview
+This repository analyzes the predictive value of NFL Combine metrics for wide receiver performance and provides an end-to-end framework for cleaning data, running statistical analysis, generating visualizations, training a predictive model, and launching an interactive application. The goal is to determine whether raw athletic testing meaningfully predicts rookie-year on-field production and to illustrate the limitations of combine-only evaluation.
 
-This project ingests player Combine metrics, merges them with in-game Next Gen Stats tracking features, trains forecasting models using **Prophet**, and visualizes how physical traits relate to real in-game performance. The pipeline identifies:
-
-- Trends and season-level changes in player performance  
-- How Combine-like metrics evolve over time during real games  
-- Athlete-specific projections (speed, acceleration, route tendencies, workload, etc.)
-- Actionable coaching insights grounded in real movement data rather than lab-like Combine drills
-
----
-
-## Key Features
-
-### **1. Data Collection & Preprocessing**
-- Loads **Combine datasets** (speed, agility, explosiveness metrics)
-- Loads **in-game player tracking data** (speed, separation, acceleration, routes, distances)
-- Performs:
-  - Normalization  
-  - Time alignment  
-  - Player ID resolution  
-  - Feature engineering  
-  - Outlier filtering
-
-### **2. Feature Engineering**
-Creates modeling-ready variables:
-- Rolling averages (3-game, 5-game, seasonal)
-- Derived athleticism indicators
-- Fatigue curves over time within games
-- Burst/acceleration windows
-- Route-type profiles (e.g., go routes vs. slants)
-- Contextual features: down, distance, defensive shell
-
-### **3. Prophet Time-Series Modeling**
-For each player and feature:
-- Builds univariate Prophet models for:
-  - Peak speed over the season  
-  - Separation trends  
-  - Acceleration bursts  
-  - Workload (routes/game)  
-- Generates:
-  - Forecasts  
-  - Uncertainty intervals  
-  - Seasonality graphs  
-  - Changepoint detection
-
-### **4. Combine ↔ Game Performance Alignment**
-Maps Combine drills to in-game equivalents:
-
-| Combine Metric | In-Game Analog |
-|----------------|----------------|
-| 40-yard dash | Top speed, burst speed windows |
-| 20-shuttle | Short-area acceleration, change-of-direction tracking |
-| Vertical jump | Explosiveness metrics in routes and breaks |
-| 3-cone drill | Curvature & agility in routes |
-
-This enables **context-aware athleticism scoring** that updates as the season progresses.
-
-### **5. Visualizations**
-Produces:
-- Compare-and-contrast charts of Combine metrics vs. in-game data  
-- Prophet forecast plots  
-- Player performance trend dashboards  
-- Efficiency vs. athleticism scatterplots  
-- Radar plots of multi-metric performance  
-
----
-
-## Example Insights
-
-- Players with **high Combine speed** but **low in-game sustained speed** show fatigue or role-based reduction.
-- Changepoints in acceleration forecasts often correlate with injury periods or role changes.
-- In-game tracking can outperform Combine results in predicting:
-  - YAC potential  
-  - Route separation  
-  - Break efficiency  
-  - Defensive matchup outcomes  
-
-The tool reveals *how the Combine fails to capture real performance stability*, and suggests using tracking-based metrics to supplement or replace Combine drills.
+The project includes:
+- A full data processing and modeling pipeline
+- Exploratory analysis (correlations, scatter plots, distribution checks)
+- A predictive model with evaluation metrics and feature importance
+- Saved visualizations
+- A Streamlit app for interactive predictions
+- A unified `run.py` CLI to execute the analysis and/or app
 
 ---
 
 ## Repository Structure
-
----
-
-## Technical Stack
-
-- **Python 3.x**
-- **Prophet**
-- **Pandas**, **NumPy**
-- **Matplotlib**, **Plotly**
-- **Scikit-learn** (for any auxiliary models) 
-- **JupyterLab** for experimentation
+```
+.
+├── run.py                     # Unified entry point: analysis, app, or both
+├── combine_analysis.py        # End-to-end data cleaning, modeling, plots, exports
+├── app.py                     # Streamlit prediction interface
+├── requirements.txt           # Dependencies
+├── README.md                  # Documentation
+├── actual_vs_predicted.png    # Model vs actual performance comparison
+├── correlation_heatmap.png    # Combine metric correlation matrix
+├── feature_importance.png     # Feature importance from predictive model
+└── scatter_plots.png          # Core exploratory figures
+```
 
 ---
 
 ## How to Run
 
-1. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-2. **Prepare Data**
-   - Place combine data in data/combine/
-   - Place tracking data in: data/tracking/
-3. **Run ETL + Feature Engineering**
-4. **Run Prophet script**
+Run everything (analysis + app):
+```
+python run.py --all
+```
+
+Run only the analytical pipeline:
+```
+python run.py --analysis
+```
+
+Run only the Streamlit app:
+```
+python run.py --app
+```
+
+---
+
+## Analysis Summary (Short)
+
+### Data
+- Combine WR records: ~444  
+- Rookie WR season records: ~654  
+- Final modeling sample: 92 WRs with complete data  
+
+### Key Insights
+- Correlations between combine tests and rookie performance are weak (top correlation ≈ 0.20).
+- Combine metrics explain roughly 0–4 percent of performance variance.
+- Predictive model (Gradient Boosting) performs below baseline, with negative test R².
+- Typical error is over 50 percent of a rookie WR’s average production.
+- Athletic tests like the 40-yard dash, shuttle, and vertical jump show minimal actionable predictive value.
+
+### Interpretation
+Combine performance alone does not meaningfully predict rookie-year on-field production for wide receivers. The analysis highlights the limitations of pure athletic testing and suggests that evaluation systems require contextual, game-derived metrics (tracking data, route performance, separation, etc.) for reliable projection.
+
+All outputs (plots and model artifacts) are saved automatically:
+- correlation_heatmap.png  
+- scatter_plots.png  
+- feature_importance.png  
+- actual_vs_predicted.png  
+- combine_analysis_export.pkl  
+
+---
+
+## Project Purpose
+This project serves as a technical demonstration of:
+- How to construct a clean data pipeline for sports analytics
+- How to evaluate feature–target relationships in a noisy domain
+- How to test predictive modeling assumptions using real data
+- Why combine metrics, when used alone, fail to provide meaningful predictive accuracy
+- How to integrate statistical analysis with interactive applications
+
+The overall design provides a reusable structure for any combine-to-performance modeling problem or similar sports-centric analysis pipeline.
+
 
