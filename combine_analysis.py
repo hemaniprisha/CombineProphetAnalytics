@@ -22,10 +22,9 @@ print("\nCOMBINE PROPHET: NFL WR PERFORMANCE PREDICTION")
 print("Goal: Evaluate predictive power of combine metrics for rookie performance")
 print("Analysis: 2015-2023 NFL Rookie WR Seasons\n")
 
-# ============================================================================
-# LOAD DATA
-# ============================================================================
-print("Loading data...")
+
+# Load Data
+print("Loading data: ")
 
 try:
     import nfl_data_py as nfl
@@ -51,10 +50,8 @@ wr_stats = seasonal_wr[seasonal_wr['position'] == 'WR'].copy()
 print(f"  Combine records: {len(combine_wr)}")
 print(f"  Seasonal records: {len(wr_stats)}\n")
 
-# ============================================================================
-# PREPARE DATA (PREVENT LEAKAGE)
-# ============================================================================
-print("Preparing data...")
+# Prepare Data
+print("Preparing data:")
 
 # Select combine metrics
 combine_cols = ['season', 'player_name', 'pos', 'ht', 'wt', 
@@ -72,7 +69,7 @@ perf_cols = ['player_name', 'season', 'games', 'receptions', 'targets',
 available_perf = [col for col in perf_cols if col in wr_stats.columns]
 wr_stats_clean = wr_stats[available_perf].copy()
 
-# CRITICAL: Keep only rookie seasons
+# Keep only rookie seasons
 wr_stats_clean = wr_stats_clean.sort_values(['player_name', 'season'])
 wr_stats_rookie = wr_stats_clean.groupby('player_name').first().reset_index()
 
@@ -89,10 +86,8 @@ if len(merged) != unique_players:
 
 print(f"  Final sample: {len(merged)} unique rookie WRs\n")
 
-# ============================================================================
-# FEATURE ENGINEERING
-# ============================================================================
-print("Creating features...")
+# Feature Engineering
+print("Creating features: ")
 
 merged['yards_per_game'] = merged['receiving_yards'] / merged['games']
 merged['yards_per_reception'] = merged['receiving_yards'] / merged['receptions'].replace(0, np.nan)
@@ -106,11 +101,9 @@ merged = merged[merged['yards_per_game'] <= ypg_99th].copy()
 print(f"  Performance metrics created")
 print(f"  Final dataset: {len(merged)} players\n")
 
-# ============================================================================
-# EXPLORATORY ANALYSIS
-# ============================================================================
+# Data Analysis
 
-print("\nCORRELATION ANALYSIS\n")
+print("\nCorrelation Analysis\n")
 
 combine_metrics = ['forty_yard', 'vertical', 'broad_jump', 'three_cone', 'shuttle']
 combine_metrics = [c for c in combine_metrics if c in merged.columns]
@@ -141,7 +134,7 @@ print(f"Variance explained by best predictor: {abs(max_corr)**2*100:.1f}%")
 print(f"Interpretation: Weak predictive relationship\n")
 
 # Create visualizations
-print("Generating visualizations...")
+print("Generating visualizations: ")
 
 # Heatmap
 plt.figure(figsize=(12, 8))
@@ -185,11 +178,9 @@ plt.close()
 print("  correlation_heatmap.png saved")
 print("  scatter_plots.png saved\n")
 
-# ============================================================================
-# PREDICTIVE MODELING
-# ============================================================================
+# Predictive Modeling
 
-print("\nPREDICTIVE MODELING\n")
+print("\nPredictive Modeling\n")
 
 feature_cols = [c for c in combine_metrics if c in merged.columns]
 target_col = 'yards_per_game'
@@ -299,11 +290,9 @@ sample_df = pd.DataFrame({
 print("\nSample Predictions:")
 print(sample_df.to_string(index=False))
 
-# ============================================================================
-# BUSINESS IMPLICATIONS
-# ============================================================================
+# Business Implications
 
-print("\n\nBUSINESS IMPLICATIONS\n")
+print("\n\nBusiness Implications\n")
 
 unexplained = max(0, (1-test_r2)*100) if test_r2 > 0 else 100
 
@@ -319,7 +308,7 @@ else:
     print(f"Prediction error: {test_mae:.1f} ypg ({test_mae/y.mean()*100:.0f}% of production)")
     print(f"Sample size: {len(model_data)} rookie WRs")
 
-print("\nWHAT COMBINE TESTING MISSES\n")
+print("\nWhat Combine Testing Misse:: \n")
 print("- Route running precision and technique")
 print("- Separation ability at catch point")
 print("- Real-game acceleration patterns")
@@ -328,7 +317,7 @@ print("- Performance under pressure/coverage")
 print("- Yards after catch ability")
 print("- Body control and adjustments")
 
-print("\nWHAT TRACKING DATA PROVIDES\n")
+print("\nWhat Tracking Data Provides\n")
 print("- XY positioning (every player, every play)")
 print("- Separation metrics vs defenders")
 print("- Speed and acceleration in game context")
@@ -348,9 +337,7 @@ print(f"\nCombine testing leaves {unexplained:.0f}% of rookie performance unexpl
 print("NFL teams making $10M decisions need comprehensive evaluation tools.")
 print("In-game tracking data addresses this gap.\n")
 
-# ============================================================================
-# SAVE RESULTS
-# ============================================================================
+# Save Results
 import pickle
 
 export = {
