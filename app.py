@@ -173,9 +173,7 @@ with col4:
 
 st.markdown("---")
 
-# ============================================================================
-# PAGE 1: OVERVIEW
-# ============================================================================
+# Page 1: Overview 
 if page == "Overview":
     st.header("Project Overview")
     
@@ -293,7 +291,7 @@ if page == "Overview":
     <p><strong>Combine testing measures {r2_pct:.1f}% of what matters. What about the other {unexplained_pct:.1f}%?</strong></p>
     <p>In-game tracking data captures:</p>
     <ul>
-        <li><strong>Real Performance:</strong> Speed, acceleration, and movement in actual game situations</li>
+        <li><strong>Performance:</strong> Speed, acceleration, and movement in actual game situations</li>
         <li><strong>Separation Metrics:</strong> Distance from defenders at catch point</li>
         <li><strong>Route Efficiency:</strong> Path quality and technique under pressure</li>
         <li><strong>Contextual Analysis:</strong> Performance by coverage type, formation, and situation</li>
